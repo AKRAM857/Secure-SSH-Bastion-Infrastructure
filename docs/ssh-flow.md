@@ -13,6 +13,12 @@ This approach minimizes the attack surface while ensuring that every SSH connect
 
 ## Authentication Process
 
+<p align="center">
+  <img src="../diagrams/ssh-flow.png"
+       alt="Infrastructure Overview"
+       width="900">
+</p>
+
 1. The administrator initiates an SSH connection from the local workstation.
 
 2. The SSH client uses the local private key (`id_ed25519`) to sign the authentication challenge. The private key never leaves the administrator's machine.
