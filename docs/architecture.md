@@ -18,7 +18,6 @@ This architecture applies fundamental Zero Trust principles by reducing the atta
 
   <img src="../diagrams/zero-trust-diagram.png"
  alt="Infrastructure Overview"
-
 width="900"> 
 </p>
 
