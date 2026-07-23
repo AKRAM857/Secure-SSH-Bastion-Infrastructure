@@ -7,7 +7,9 @@ Administrative access is centralized through a hardened Bastion Host. The Bastio
 The Bastion performs authentication, access control, and traffic filtering before allowing administrators to reach internal systems through SSH ProxyJump.
 
 <p align="center">
-  <img src="diagrams/zero-trust-diagram.drawio.png" alt="Infrastructure Overview" width="900">
+  <img src="../diagrams/zero-trust-diagram.drawio.png"
+       alt="Infrastructure Overview"
+       width="900">
 </p>
 
 ### Architecture Overview
