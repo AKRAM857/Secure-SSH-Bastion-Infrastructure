@@ -40,7 +40,7 @@ The infrastructure is designed around a single principle:
 The Bastion Host acts as the only entry point to the internal infrastructure while firewall policies and network segmentation prevent unauthorized communication between systems.
 
 <p align="center">
-  <img src="diagrams/zero-trust-diagram (1).drawio" alt="Infrastructure Overview" width="900">
+  <img src="diagrams/zero-trust-diagram.drawio.png" alt="Infrastructure Overview" width="900">
 </p>
 
 ---
