@@ -1,89 +1,50 @@
-# Infrastructure Architecture
-
-## Overview
-
-The infrastructure is designed around the principle that internal systems should never be directly exposed to external networks.
-
-Instead of allowing administrators to connect directly to the target server, all remote administrative access is centralized through a dedicated Bastion Host. The Bastion acts as the only trusted entry point into the environment, enforcing authentication before any connection is allowed to reach internal systems.
-
-This architecture applies fundamental Zero Trust principles by reducing the attack surface, isolating internal resources, and ensuring that every administrative connection is explicitly authenticated.
-
----
-
 ## Architecture Diagram
 
-
-
 <p align="center">
-
-  <img src="../diagrams/architecture.png"
- alt="Infrastructure Overview"
-width="900"> 
+  <img src="../diagrams/architecture.png" alt="Infrastructure Overview" width="900">
 </p>
-
 
 ## Architecture Components
 
 | Component | Role |
 |-----------|------|
-| **Developer Workstation** | The administrator's computer used to manage the infrastructure through SSH. |
-| **VirtualBox NAT** | Provides Internet connectivity for the virtual machines and forwards SSH traffic from the host to the Bastion Host. |
-| **Ubuntu Bastion Host** | The only system exposed for remote administration. It authenticates administrators and securely forwards SSH sessions to internal systems using ProxyJump. |
-| **External Interface (`enp0s3`)** | Connects the Bastion Host to the VirtualBox NAT network. |
-| **Internal Interface (`enp0s8`)** | Connects the Bastion Host to the protected internal network. |
-| **Protected Network** | Private network containing systems that are intentionally inaccessible from external networks. |
-| **Kali Linux Server** | Internal machine used for administration and security testing. It can only be reached through the Bastion Host. |
+| **Physical Host (Developer's Laptop)** | The administrator's workstation. Initiates all SSH connections into the infrastructure through port forwarding. |
+| **VirtualBox NAT** | Simulates an internet gateway. Forwards SSH connections from the physical host to the Bastion Host via port forwarding (2222 → 22). Also provides internet access for the Bastion so internal servers can pull updates through it. |
+| **Bastion Server (Ubuntu)** | The only machine reachable from outside. Authenticates every connection and forwards authorized sessions to the internal server via SSH ProxyJump. Equipped with two network interfaces — one facing the exposed network, one facing the internal network. |
+| **Exposed Network** | The network segment where the Bastion's external interface lives. Reachable from the physical host through VirtualBox NAT. |
+| **Internal Network** | A fully isolated private network. No machine here is reachable from outside — the only path in is through the Bastion. |
+| **Server 1 (Kali Linux)** | Internal server sitting inside the protected network. Reachable exclusively through the Bastion via ProxyJump. Never exposed to external connections directly. |
 
 ---
 
 ## Network Design
 
-The Bastion Host is equipped with two network interfaces, allowing it to operate as the boundary between two separate security zones.
+The Bastion Host has two network interfaces that place it at the boundary between two separate network zones.
 
-The external interface provides connectivity to the VirtualBox NAT network, making the Bastion the only machine reachable from the host computer. The internal interface connects to the protected network, where administrative systems remain isolated from direct external access.
+The external interface (`enp0s3`) connects to the exposed network, making the Bastion the only machine the physical host can reach. The internal interface (`enp0s8`) connects to the protected internal network where Server 1 lives.
 
-This separation ensures that internal hosts are never exposed to incoming connections while still allowing authorized administrators to securely access them through the Bastion.
+Traffic flows in two directions through this design:
+
+- **Inbound SSH** — The physical host connects to `localhost:2222`, VirtualBox NAT forwards it to the Bastion on port 22. The Bastion authenticates the connection and uses ProxyJump to transparently tunnel it through to Server 1 on the internal network.
+- **Outbound updates** — Server 1 cannot reach the internet directly. Update requests travel from Server 1 through the Bastion's internal interface, out through the external interface, and through VirtualBox NAT to the internet. The Bastion performs NAT masquerading so responses return correctly.
+
+This separation guarantees that Server 1 is never directly exposed. There is no route to it except through the Bastion.
 
 ---
 
 ## Security Model
 
-The architecture follows several core security principles:
-
-- The Bastion Host is the only externally reachable system.
-- Internal servers are isolated within a private network.
-- Administrative access is performed exclusively through SSH.
-- Public-key authentication is used instead of passwords.
-- SSH ProxyJump provides secure access to internal systems without exposing them directly.
-- Network segmentation limits the exposure of critical infrastructure.
-
-Rather than relying on perimeter security alone, every administrative connection must first authenticate with the Bastion Host before reaching the protected environment.
+- The Bastion is the only externally reachable machine — everything else is behind it
+- Public-key cryptography replaces passwords entirely — no password authentication exists on any machine
+- SSH ProxyJump creates a transparent encrypted tunnel through the Bastion to internal servers — the Bastion never sees credentials for the internal server
+- The private key never leaves the physical host — the Bastion is a blind pipe, not a credential store
+- Network segmentation enforces isolation at the infrastructure level — not just at the software level
 
 ---
 
 ## Engineering Decisions
 
-Several design decisions were made during the implementation of this environment:
-
-- Ubuntu Server was selected as the Bastion operating system because of its stability and extensive documentation.
-- The Bastion Host uses two network interfaces to separate external connectivity from the protected internal network.
-- VirtualBox NAT was used to emulate Internet connectivity while keeping the lab isolated from the physical network.
-- SSH ProxyJump was chosen to simplify secure multi-hop administration without exposing internal systems.
-- The infrastructure was intentionally built from individual Linux components to better understand how routing, authentication, and access control interact.
-
-These choices prioritize understanding the underlying technologies rather than relying on preconfigured security appliances.
-
----
-
-## Next Steps
-
-This architecture establishes the foundation for additional security controls that will be introduced in future iterations of the project, including:
-
-- Firewall enforcement using **nftables**
-- SSH service hardening
-- Fail2Ban integration
-- Centralized security monitoring
-- Multi-factor authentication
-- VPN-based administrative access
-
-Each enhancement builds upon the same Zero Trust architecture while maintaining the principle that internal systems should never be directly exposed.
+- **Two-interface Bastion design** — separating external and internal connectivity enforces network-level isolation. An attacker who reaches the exposed network cannot reach the internal network without passing through the Bastion's authentication and firewall layers.
+- **VirtualBox NAT as internet gateway** — simulates the role of an AWS Internet Gateway or ISP router. The Bastion acts as the NAT router for internal servers, mirroring the production pattern where private subnet machines route outbound traffic through a gateway.
+- **Port forwarding 2222 → 22** — simulates a public IP on the Bastion. In a real cloud deployment, an Elastic IP would be assigned directly to the Bastion's external interface. The security model is identical — only the addressing mechanism differs.
+- **ProxyJump over manual multi-hop** — using `-J` keeps the private key on the physical host at all times. A compromised Bastion gains no credentials for internal servers because the authentication challenge is forwarded back to the client to solve locally.
