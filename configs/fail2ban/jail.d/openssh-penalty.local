@@ -1,0 +1,10 @@
+[openssh-penalty]
+enabled = true
+port = ssh
+filter = openssh-penalty
+backend = systemd
+journalmatch = _TRANSPORT=syslog _COMM=sshd
+maxretry = 5
+findtime = 1m
+bantime = 1h
+action = nftables[name=sshd, port=ssh, protocol=tcp]
