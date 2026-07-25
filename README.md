@@ -1,6 +1,6 @@
-# Zero Trust Infrastructure
+# Secure SSH Bastion Infrastructure
 
-> **Designing secure Linux infrastructure using Zero Trust principles.**
+> **Building and hardening a Linux Bastion Host using OpenSSH, ProxyJump, nftables, Fail2Ban and Zero Trust principles.**
 
 A production-inspired infrastructure project that secures administrative access through a hardened SSH Bastion Host using OpenSSH, public key authentication, network segmentation, and stateful firewall policies.
 
@@ -53,10 +53,24 @@ The Bastion Host acts as the only entry point to the internal infrastructure whi
 | Authentication | SSH Public Key Authentication |
 | Administrative Access | SSH ProxyJump |
 | Firewall | nftables |
+| Intrusion Prevention | Fail2Ban |
 | Network Security | Stateful Packet Filtering |
 | Network Segmentation | Isolated Internal Network |
 | Routing | Linux Router |
 | Operating System | Ubuntu Server |
+
+---
+## Defense Layers
+
+The Bastion Host follows a layered security model where multiple mechanisms cooperate instead of relying on a single control.
+
+| Layer | Technology |
+|--------|------------|
+| Authentication | SSH Public Keys |
+| Access Control | SSH ProxyJump |
+| Network Filtering | nftables |
+| Intrusion Prevention | Fail2Ban |
+| Logging | systemd-journald |
 
 ---
 
@@ -73,6 +87,7 @@ The current implementation includes the following engineering components:
 | nftables Firewall | ✅ |
 | Linux Routing | ✅ |
 | Network Segmentation | ✅ |
+| Fail2Ban | ✅ |
 | Technical Documentation | 🚧 |
 | Architecture Diagrams | 🚧 |
 
@@ -112,7 +127,7 @@ The documentation will continue to evolve as the project grows.
 
 The current implementation provides the foundation of the infrastructure. Future improvements may include:
 
-- Fail2Ban integration
+
 - SSH Certificate Authentication
 - Multi-Factor Authentication (MFA)
 - VPN-based administrative access
@@ -123,11 +138,11 @@ The current implementation provides the foundation of the infrastructure. Future
 
 ## Project Status
 
-**Current Stage:** Documentation & Refinement
+Current Stage: Infrastructure Complete
 
-The infrastructure has been successfully implemented and validated in a virtualized laboratory environment.
+The core infrastructure has been fully implemented and validated.
 
-Current work focuses on improving documentation, producing professional architecture diagrams, and refining the repository before introducing additional security features.
+The remaining work focuses on documentation, architecture diagrams, and engineering reports.
 
 ---
 
