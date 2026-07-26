@@ -1,1 +1,4 @@
 -w /usr/bin/sudo -p x -k sudo-execution
+-a always,exit -F arch=b64 -S execve -F euid=0 -k privileged-exec
+-w /etc/sudoers -p rwa -k sudoers-modified
+
