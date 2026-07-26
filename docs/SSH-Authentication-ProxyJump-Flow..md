@@ -14,7 +14,7 @@ This approach minimizes the attack surface while ensuring that every SSH connect
 ## Authentication Process
 
 <p align="center">
-  <img src="../diagrams/SSH-Authentication-ProxyJump-Flow.png."
+  <img src="../diagrams/SSH-Authentication-ProxyJump-Flow.png.png"
        alt="Infrastructure Overview"
        width="900">
 </p>
