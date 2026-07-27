@@ -19,3 +19,6 @@
 -w /etc/ssh/sshd_config -p rwa -k ssh-configuration
 -w /etc/ssh/sshd_config.d -p rwa -k ssh-configuration
 -w /etc/ssh/ -p rwa -k ssh-configuration
+#watch auditd
+-w /etc/audit -p rwa -k audit-config 
+-w /var/log/audit -p rwa -k audit-logs 
