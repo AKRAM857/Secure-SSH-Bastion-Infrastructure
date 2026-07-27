@@ -7,8 +7,10 @@
 -w /var/log/auth.log -p rwa -k authentications-log
 #watch groups
 -w /etc/group -p rwa -k groups-modified
-#watch password
--w /etc/passwd -p rwa -k passowrd-modified
+#watch users database
+-w /etc/passwd -p rwa -k users-access
+#watch passwords
+-w /etc/shadow -p rwa -k password-access
 #watch users creation,deletion,modification
 -w /etc/useradd -p x -k add-user
 -w /etc/userdel -p x -k delete-user
