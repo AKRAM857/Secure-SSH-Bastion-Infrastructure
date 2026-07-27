@@ -22,3 +22,23 @@
 #watch auditd
 -w /etc/audit -p rwa -k audit-config 
 -w /var/log/audit -p rwa -k audit-logs 
+#watch firewalls
+-w /etc/nftables.conf -p rwa -k firewall-modified
+#watch root directory
+-w /root/ -p rwa -k root-directory
+#watch .ssh
+-w /home/developer1/.ssh/ -p rwa -k ssh-directories
+-w /home/ops1/.ssh/ -p rwa -k ssh-directories
+-w /home/auditor/.ssh/ -p rwa -k ssh-directories
+
+#Watch all authorized_keys files
+-w /home/developer1/.ssh/authorized_keys -p rwa -k authorized-keys
+-w /home/ops1/.ssh/authorized_keys -p rwa -k authorized-keys
+-w /home/auditor/.ssh/authorized_keys -p rwa -k authorized-keys
+-w /root/.ssh/ -p rwa -k authorized-keys
+
+# Watch permission and ownership changes on sensitive paths
+-a always,exit -F arch=b64 -S chmod -S fchmod -S chown -S fchown -F auid>=1000 -k permission-change
+-a always,exit -F arch=b32 -S chmod -S fchmod -S chown -S fchown -F auid>=1000 -k permission-change
+#watch fail2ban
+-w /etc/fail2ban/ -p rwa -k fail2ban-config
