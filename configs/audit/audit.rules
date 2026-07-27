@@ -42,3 +42,7 @@
 -a always,exit -F arch=b32 -S chmod -S fchmod -S chown -S fchown -F auid>=1000 -k permission-change
 #watch fail2ban
 -w /etc/fail2ban/ -p rwa -k fail2ban-config
+#network configuration
+-w /etc/hosts -p rwa -k network-config
+-w /etc/resolv.conf -p rwa -k network-config
+-w /sbin/iptables -p x -k firewall-tools
