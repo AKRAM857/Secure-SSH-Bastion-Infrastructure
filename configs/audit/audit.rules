@@ -15,3 +15,7 @@
 -w /etc/useradd -p x -k add-user
 -w /etc/userdel -p x -k delete-user
 -w /etc/usermod -p x -k modify-user
+#watch ssh confih=guration
+-w /etc/ssh/sshd_config -p rwa -k ssh-configuration
+-w /etc/ssh/sshd_config.d -p rwa -k ssh-configuration
+-w /etc/ssh/ -p rwa -k ssh-configuration
