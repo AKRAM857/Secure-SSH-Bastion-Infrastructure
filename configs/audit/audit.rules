@@ -1,4 +1,15 @@
+#watch sudo execution, sudoers file
 -w /usr/bin/sudo -p x -k sudo-execution
 -a always,exit -F arch=b64 -S execve -F euid=0 -k privileged-exec
 -w /etc/sudoers -p rwa -k sudoers-modified
-
+-w /etc/sudoers.d/ -p rwa -k sudoers-modified
+#watch authentication file
+-w /var/log/auth.log -p rwa -k authentications-log
+#watch groups
+-w /etc/group -p rwa -k groups-modified
+#watch password
+-w /etc/passwd -p rwa -k passowrd-modified
+#watch users creation,deletion,modification
+-w /etc/useradd -p x -k add-user
+-w /etc/userdel -p x -k delete-user
+-w /etc/usermod -p x -k modify-user
