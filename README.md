@@ -1,4 +1,4 @@
-# Secure SSH Bastion Infrastructure
+# Designing a Secure SSH Bastion Infrastructure for Zero-Trust Administrative Access
 
 > **Building and hardening a Linux Bastion Host using OpenSSH, ProxyJump, nftables, Fail2Ban and Zero Trust principles.**
 
